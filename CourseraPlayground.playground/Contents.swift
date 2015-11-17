@@ -241,9 +241,85 @@ anum_s.n
 
 
 
+let im = UIImage(named: "sample")!
+let rgbaImage = RGBAImage(image: im)!
+
+//let x = 20
+//let y = 20
+//let index = y * rgbaImage.width + x
+//var pixel = rgbaImage.pixels[index]
+
+//pixel.red = 255
+//pixel.green = 0
+//pixel.blue = 0
+
+//rgbaImage.pixels[index] = pixel
+//let newImage = rgbaImage.toUIImage()!
+
+var totalRed = 0
+var totalGreen = 0
+var totalBlue = 0
+
+/*
+for y in 0..<rgbaImage.height {
+    for x in 0..<rgbaImage.width {
+        let index = y * rgbaImage.width + x
+        let pixel = rgbaImage.pixels[index]
+        
+        totalRed += Int(pixel.red)
+        totalGreen += Int(pixel.green)
+        totalBlue += Int(pixel.blue)
+    }
+} */
+
+let pixelCount = rgbaImage.width * rgbaImage.height
+let avgRed = 118    //totalRed / pixelCount
+let avgGreen = 98   //totalGreen / pixelCount
+let avgBlue = 83    //totalBlue / pixelCount
+let sum = avgRed + avgGreen + avgBlue
+
+/*
+for y in 0..<rgbaImage.height {
+    for x in 0..<rgbaImage.width {
+        let index = y * rgbaImage.width + x
+        var pixel = rgbaImage.pixels[index]
+        
+        if (Int(pixel.red) + Int(pixel.green) + Int(pixel.blue) < sum) {
+            pixel.red = 0
+            pixel.blue = 0
+            pixel.green = 0
+            rgbaImage.pixels[index] = pixel
+        }
+    }
+}
+
+let newImage = rgbaImage.toUIImage()! */
 
 
+//Code to increase the contrast in the image
+for y in 0..<rgbaImage.height {
+    for x in 0..<rgbaImage.width {
+        let index = y * rgbaImage.width + x
+        var pixel = rgbaImage.pixels[index]
+        
+        let redDelta = Int(pixel.red) - avgRed
+        let greenDelta = Int(pixel.green) - avgGreen
+        let blueDelta = Int(pixel.blue) - avgBlue
+        
+        var modifier = 2
+        if (Int(pixel.red) + Int(pixel.green) + Int(pixel.blue) < sum){
+            modifier = 1
+        }
+        
+        pixel.red = UInt8(max(min(255, avgRed + modifier * redDelta),0))
+        pixel.blue = UInt8(max(min(255, avgBlue + modifier * blueDelta),0))
+        pixel.green = UInt8(max(min(255, avgGreen + modifier * greenDelta),0))
+        rgbaImage.pixels[index] = pixel
+        
+    }
+}
 
+im
 
-
+let newImage = rgbaImage.toUIImage()!
 
